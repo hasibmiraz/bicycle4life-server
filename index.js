@@ -32,10 +32,10 @@ async function run() {
     const reviewsCollection = client.db('bicycleForLife').collection('reviews');
 
     // Get all parts
-    app.get('/part', async (req, res) => {
-      const parts = await partsCollection.find({}).toArray();
-      res.send(parts);
-    });
+    // app.get('/part', async (req, res) => {
+    //   const parts = await partsCollection.find({}).toArray();
+    //   res.send(parts);
+    // });
 
     // Get Single part
     app.get('/part/:id', async (req, res) => {
