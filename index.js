@@ -28,6 +28,10 @@ async function run() {
     await client.connect();
     const partsCollection = client.db('bicycleForLife').collection('parts');
 
+    app.get('/', async (req, res) => {
+      res.send('Working');
+    });
+
     app.get('/part', async (req, res) => {
       const parts = await partsCollection.find({}).toArray();
       res.send(parts);
