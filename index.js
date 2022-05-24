@@ -3,9 +3,9 @@ import cors from 'cors';
 import 'dotenv/config';
 import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
 
-// variables
-const app = express();
+// variable
 const port = process.env.PORT || 5000;
+const app = express();
 
 // use middleware
 app.use(express.json());
