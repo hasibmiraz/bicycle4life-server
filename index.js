@@ -55,7 +55,6 @@ async function run() {
       const email = req.query.email;
       const query = { email };
       const orders = await orderCollection.find(query).toArray();
-      console.log(orders);
       res.send(orders);
     });
 
