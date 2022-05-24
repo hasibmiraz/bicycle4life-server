@@ -66,6 +66,14 @@ async function run() {
       res.send({ success: true, result });
     });
 
+    // Delete Order
+    app.delete('/part/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const result = await orderCollection.deleteOne(filter);
+      res.send(result);
+    });
+
     // get all reviews
     app.get('/review', async (req, res) => {
       const reviews = await reviewsCollection.find({}).toArray();
