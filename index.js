@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
 
 // variables
 const app = express();
@@ -37,6 +37,14 @@ async function run() {
     app.get('/part', async (req, res) => {
       const parts = await partsCollection.find({}).toArray();
       res.send(parts);
+    });
+
+    // Get Single part
+    app.get('/part/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const part = await partsCollection.findOne(query);
+      res.send(part);
     });
 
     // get all reviews
