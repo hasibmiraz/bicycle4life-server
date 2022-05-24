@@ -9,12 +9,13 @@ const app = express();
 
 // use middleware
 app.use(express.json());
-const corsConfig = {
-  origin: true,
-  credentials: true,
-};
-app.use(cors(corsConfig));
-app.options('*', cors(corsConfig));
+// const corsConfig = {
+//   origin: true,
+//   credentials: true,
+// };
+
+app.use(cors());
+// app.options('*', cors(corsConfig));
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.sjrht.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
