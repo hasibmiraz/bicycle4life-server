@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(cors());
 // app.options('*', cors(corsConfig));
 
-const uri = `mongodb+srv://bicycle4life:eZYy6j9S8m0MC7Fz@cluster0.sjrht.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.sjrht.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -32,10 +32,10 @@ async function run() {
     const reviewsCollection = client.db('bicycleForLife').collection('reviews');
 
     // Get all parts
-    // app.get('/part', async (req, res) => {
-    //   const parts = await partsCollection.find({}).toArray();
-    //   res.send(parts);
-    // });
+    app.get('/part', async (req, res) => {
+      const parts = await partsCollection.find({}).toArray();
+      res.send(parts);
+    });
 
     // Get Single part
     app.get('/part/:id', async (req, res) => {
