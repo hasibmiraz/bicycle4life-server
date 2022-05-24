@@ -30,7 +30,7 @@ async function run() {
     const partsCollection = client.db('bicycleForLife').collection('parts');
     const reviewsCollection = client.db('bicycleForLife').collection('reviews');
 
-    app.get('/', async (req, res) => {
+    app.get('/', (req, res) => {
       res.send('Working');
     });
 
