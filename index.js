@@ -30,10 +30,6 @@ async function run() {
     const partsCollection = client.db('bicycleForLife').collection('parts');
     const reviewsCollection = client.db('bicycleForLife').collection('reviews');
 
-    app.get('/', (req, res) => {
-      res.send('Working');
-    });
-
     // Get all parts
     app.get('/part', async (req, res) => {
       const parts = await partsCollection.find({}).toArray();
@@ -57,5 +53,9 @@ async function run() {
   }
 }
 run().catch(console.dir);
+
+app.get('/', (req, res) => {
+  res.send('Working');
+});
 
 app.listen(port, console.log(`Listening to port ${port}`));
