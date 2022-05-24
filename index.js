@@ -30,6 +30,11 @@ async function run() {
     await client.connect();
     const partsCollection = client.db('bicycleForLife').collection('parts');
     const reviewsCollection = client.db('bicycleForLife').collection('reviews');
+    const orderCollection = client.db('bicycleForLife').collection('orders');
+
+    app.get('/', (req, res) => {
+      res.send('Working');
+    });
 
     // Get all parts
     app.get('/part', async (req, res) => {
@@ -45,6 +50,13 @@ async function run() {
       res.send(part);
     });
 
+    // Order Part
+    app.post('/part', async (req, res) => {
+      const order = req.body;
+      const result = await orderCollection.insertOne(order);
+      res.send({ success: true, result });
+    });
+
     // get all reviews
     app.get('/review', async (req, res) => {
       const reviews = await reviewsCollection.find({}).toArray();
@@ -54,9 +66,5 @@ async function run() {
   }
 }
 run().catch(console.dir);
-
-app.get('/', (req, res) => {
-  res.send('Working');
-});
 
 app.listen(port, console.log(`Listening to port ${port}`));
