@@ -12,8 +12,9 @@ const corsConfig = {
   origin: true,
   credentials: true,
 };
-app.use(cors(corsConfig));
+app.use(cors());
 app.options('*', cors(corsConfig));
+app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.sjrht.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
