@@ -50,7 +50,16 @@ async function run() {
       res.send(part);
     });
 
-    // Order Part
+    // Get Orders of a specific user
+    app.get('/part-orders', async (req, res) => {
+      const email = req.query.email;
+      const query = { email };
+      const orders = await orderCollection.find(query).toArray();
+      console.log(orders);
+      res.send(orders);
+    });
+
+    // Order Parts
     app.post('/part', async (req, res) => {
       const order = req.body;
       const result = await orderCollection.insertOne(order);
