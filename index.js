@@ -9,7 +9,12 @@ const port = process.env.PORT || 5000;
 
 // use middleware
 app.use(express.json());
-app.use(cors());
+const corsConfig = {
+  origin: true,
+  credentials: true,
+};
+app.use(cors(corsConfig));
+app.options('*', cors(corsConfig));
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.sjrht.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
@@ -22,14 +27,22 @@ async function run() {
   try {
     await client.connect();
     const partsCollection = client.db('bicycleForLife').collection('parts');
+    const reviewsCollection = client.db('bicycleForLife').collection('reviews');
 
     app.get('/', async (req, res) => {
       res.send('Working');
     });
 
+    // Get all parts
     app.get('/part', async (req, res) => {
       const parts = await partsCollection.find({}).toArray();
       res.send(parts);
+    });
+
+    // get all reviews
+    app.get('/review', async (req, res) => {
+      const reviews = await reviewsCollection.find({}).toArray();
+      res.send(reviews);
     });
   } finally {
   }
