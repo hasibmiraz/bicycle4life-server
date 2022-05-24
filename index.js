@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-require('dotenv').config();
+import 'dotenv/config';
 import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
 
 // variable
