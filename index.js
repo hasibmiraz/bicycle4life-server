@@ -102,6 +102,12 @@ async function run() {
       res.send({ success: true, result });
     });
 
+    // Create a review
+    app.get('/user', verifyJWT, async (req, res) => {
+      const result = await userCollection.find({}).toArray();
+      res.send(result);
+    });
+
     // create user in db
     app.put('/user/:email', async (req, res) => {
       const email = req.params.email;
