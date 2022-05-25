@@ -20,6 +20,21 @@ const client = new MongoClient(uri, {
   serverApi: ServerApiVersion.v1,
 });
 
+const verifyJWT = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).send({ message: 'Unauthorized access!' });
+  }
+  const token = authHeader.split(' ')[1];
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(403).send({ message: 'Forbidden access!' });
+    }
+    req.decoded = decoded;
+    next();
+  });
+};
+
 async function run() {
   try {
     await client.connect();
@@ -39,7 +54,7 @@ async function run() {
     });
 
     // Get Single part
-    app.get('/part/:id', async (req, res) => {
+    app.get('/part/:id', verifyJWT, async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const part = await partsCollection.findOne(query);
@@ -47,7 +62,7 @@ async function run() {
     });
 
     // Get Orders of a specific user
-    app.get('/part-orders', async (req, res) => {
+    app.get('/part-orders', verifyJWT, async (req, res) => {
       const email = req.query.email;
       const query = { email };
       const orders = await orderCollection.find(query).toArray();
@@ -55,14 +70,14 @@ async function run() {
     });
 
     // Order Parts
-    app.post('/part', async (req, res) => {
+    app.post('/part', verifyJWT, async (req, res) => {
       const order = req.body;
       const result = await orderCollection.insertOne(order);
       res.send({ success: true, result });
     });
 
     // Delete Order
-    app.delete('/part/:id', async (req, res) => {
+    app.delete('/part/:id', verifyJWT, async (req, res) => {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
       const result = await orderCollection.deleteOne(filter);
@@ -76,7 +91,7 @@ async function run() {
     });
 
     // Create a review
-    app.post('/review', async (req, res) => {
+    app.post('/review', verifyJWT, async (req, res) => {
       const review = req.body;
       const result = await reviewsCollection.insertOne(review);
       res.send({ success: true, result });
