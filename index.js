@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const ObjectId = require('mongodb').ObjectId;
+const jwt = require('jsonwebtoken');
 
 // variables
 const port = process.env.PORT || 5000;
@@ -10,13 +11,7 @@ const app = express();
 
 // use middleware
 app.use(express.json());
-// const corsConfig = {
-//   origin: true,
-//   credentials: true,
-// };
-
 app.use(cors());
-// app.options('*', cors(corsConfig));
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.sjrht.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
@@ -31,6 +26,7 @@ async function run() {
     const partsCollection = client.db('bicycleForLife').collection('parts');
     const reviewsCollection = client.db('bicycleForLife').collection('reviews');
     const orderCollection = client.db('bicycleForLife').collection('orders');
+    const userCollection = client.db('bicycleForLife').collection('users');
 
     app.get('/', (req, res) => {
       res.send('Working');
@@ -84,6 +80,26 @@ async function run() {
       const review = req.body;
       const result = await reviewsCollection.insertOne(review);
       res.send({ success: true, result });
+    });
+
+    // create user in db
+    app.put('/user/:email', async (req, res) => {
+      const email = req.params.email;
+      const user = req.body;
+      const filter = { email };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: user,
+      };
+      const result = await userCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      const token = jwt.sign({ email }, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: '1d',
+      });
+      res.send({ result, token });
     });
   } finally {
   }
