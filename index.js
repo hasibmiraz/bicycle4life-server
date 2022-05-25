@@ -64,9 +64,14 @@ async function run() {
     // Get Orders of a specific user
     app.get('/part-orders', verifyJWT, async (req, res) => {
       const email = req.query.email;
-      const query = { email };
-      const orders = await orderCollection.find(query).toArray();
-      res.send(orders);
+      const decoded = req.decoded.email;
+      if (email === decoded) {
+        const query = { email };
+        const orders = await orderCollection.find(query).toArray();
+        return res.send(orders);
+      } else {
+        return res.send(403).send({ message: 'Unauthorized access!' });
+      }
     });
 
     // Order Parts
