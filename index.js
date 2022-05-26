@@ -62,16 +62,16 @@ async function run() {
     });
 
     // Get Orders of a specific user
-    app.get('/part-orders', async (req, res) => {
+    app.get('/part-orders', verifyJWT, async (req, res) => {
       const email = req.query.email;
-      // const decoded = req.decoded.email;
-      // if (email === decoded) {
-      const query = { email };
-      const orders = await orderCollection.find(query).toArray();
-      return res.send(orders);
-      // } else {
-      // return res.send(403).send({ message: 'Unauthorized access!' });
-      // }
+      const decoded = req.decoded.email;
+      if (email === decoded) {
+        const query = { email };
+        const orders = await orderCollection.find(query).toArray();
+        return res.send(orders);
+      } else {
+        return res.send(403).send({ message: 'Unauthorized access!' });
+      }
     });
 
     // Order Parts
