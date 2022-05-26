@@ -127,6 +127,19 @@ async function run() {
       });
       res.send({ result, token });
     });
+
+    // Make user admin
+    app.put('/user/admin/:email', verifyJWT, async (req, res) => {
+      const email = req.params.email;
+      const filter = { email };
+      const updatedDoc = {
+        $set: {
+          isAdmin: true,
+        },
+      };
+      const result = await userCollection.updateOne(filter, updatedDoc);
+      res.send(result);
+    });
   } finally {
   }
 }
