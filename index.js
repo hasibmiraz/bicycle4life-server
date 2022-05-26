@@ -71,6 +71,13 @@ async function run() {
       res.send(parts);
     });
 
+    // Add new prdouct
+    app.post('/add-product', verifyJWT, checkAdmin, async (req, res) => {
+      const order = req.body;
+      const result = await partsCollection.insertOne(order);
+      res.send({ success: true, result });
+    });
+
     // Get Single part
     app.get('/part/:id', verifyJWT, async (req, res) => {
       const id = req.params.id;
