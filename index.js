@@ -79,6 +79,14 @@ async function run() {
       res.send(part);
     });
 
+    // Delete product
+    app.delete('/product/:id', verifyJWT, checkAdmin, async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const result = await partsCollection.deleteOne(filter);
+      res.send(result);
+    });
+
     // Get Orders of a specific user
     app.get('/part-orders', verifyJWT, async (req, res) => {
       const email = req.query.email;
