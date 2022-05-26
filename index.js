@@ -59,7 +59,7 @@ async function run() {
       res.send('Working');
     });
 
-    // Get all parts
+    // Get all parts for home page
     app.get('/part', async (req, res) => {
       const parts = await partsCollection.find({}).toArray();
       res.send(parts);
@@ -84,6 +84,12 @@ async function run() {
       } else {
         return res.send(403).send({ message: 'Unauthorized access!' });
       }
+    });
+
+    // Get All orders
+    app.get('/all-orders', verifyJWT, checkAdmin, async (req, res) => {
+      const result = await orderCollection.find({}).toArray();
+      res.send(result);
     });
 
     // Order Parts
