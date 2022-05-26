@@ -105,6 +105,14 @@ async function run() {
       res.send(result);
     });
 
+    // Delete Order
+    app.delete('/order/:id', verifyJWT, checkAdmin, async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const result = await orderCollection.deleteOne(filter);
+      res.send(result);
+    });
+
     // Order Parts
     app.post('/part', verifyJWT, async (req, res) => {
       const order = req.body;
