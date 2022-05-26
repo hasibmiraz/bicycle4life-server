@@ -43,6 +43,18 @@ async function run() {
     const orderCollection = client.db('bicycleForLife').collection('orders');
     const userCollection = client.db('bicycleForLife').collection('users');
 
+    const checkAdmin = async (req, res, next) => {
+      const requester = req.decoded.email;
+      const requesterAccount = await userCollection.findOne({
+        email: requester,
+      });
+      if (requesterAccount.isAdmin) {
+        next();
+      } else {
+        res.status(403).send({ message: 'Forbidden Access!' });
+      }
+    };
+
     app.get('/', (req, res) => {
       res.send('Working');
     });
@@ -102,7 +114,7 @@ async function run() {
       res.send({ success: true, result });
     });
 
-    // Create a review
+    // Get all users
     app.get('/user', verifyJWT, async (req, res) => {
       const result = await userCollection.find({}).toArray();
       res.send(result);
@@ -137,23 +149,16 @@ async function run() {
     });
 
     // Make user admin
-    app.put('/user/admin/:email', verifyJWT, async (req, res) => {
+    app.put('/user/admin/:email', verifyJWT, checkAdmin, async (req, res) => {
       const email = req.params.email;
-      const requester = req.decoded.email;
-      const requesterAccount = await userCollection.findOne({
-        email: requester,
-      });
-      if (requesterAccount.isAdmin) {
-        const filter = { email };
-        const updatedDoc = {
-          $set: {
-            isAdmin: true,
-          },
-        };
-        const result = await userCollection.updateOne(filter, updatedDoc);
-        return res.send(result);
-      }
-      return res.status(403).send({ message: 'Forbidden access!' });
+      const filter = { email };
+      const updatedDoc = {
+        $set: {
+          isAdmin: true,
+        },
+      };
+      const result = await userCollection.updateOne(filter, updatedDoc);
+      res.send(result);
     });
   } finally {
   }
