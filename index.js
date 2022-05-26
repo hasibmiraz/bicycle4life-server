@@ -86,6 +86,19 @@ async function run() {
       }
     });
 
+    // Ship order
+    app.put('/order/:id', verifyJWT, checkAdmin, async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          shipped: true,
+        },
+      };
+      const result = await orderCollection.updateOne(filter, updatedDoc);
+      res.send(result);
+    });
+
     // Get All orders
     app.get('/all-orders', verifyJWT, checkAdmin, async (req, res) => {
       const result = await orderCollection.find({}).toArray();
