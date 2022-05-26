@@ -65,6 +65,12 @@ async function run() {
       res.send(parts);
     });
 
+    // Get all parts for home page
+    app.get('/part/admin', verifyJWT, checkAdmin, async (req, res) => {
+      const parts = await partsCollection.find({}).toArray();
+      res.send(parts);
+    });
+
     // Get Single part
     app.get('/part/:id', verifyJWT, async (req, res) => {
       const id = req.params.id;
@@ -168,7 +174,7 @@ async function run() {
     });
 
     // get admins
-    app.get('/admin/:email', verifyJWT, async (req, res) => {
+    app.get('/admin/:email', async (req, res) => {
       const email = req.params.email;
       const user = await userCollection.findOne({ email });
       const isAdmin = user.isAdmin;
